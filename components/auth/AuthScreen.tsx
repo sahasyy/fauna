@@ -3,12 +3,8 @@
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import {
-  initialState,
-  signInAction,
-  signUpAction,
-  type AuthState,
-} from "@/app/auth/actions";
+import { signInAction, signUpAction } from "@/app/auth/actions";
+import { initialState, type AuthState } from "@/app/auth/state";
 
 export type AuthMode = "login" | "signup";
 
@@ -42,25 +38,18 @@ const authCopy: Record<
 };
 
 const fieldClass =
-  "mt-2 h-12 w-full rounded-[6px] border border-[#86935b]/18 bg-white/84 px-4 text-[0.95rem] text-[#172332] outline-none transition-colors placeholder:text-[#637180] focus:border-[#7d8a4f] focus:ring-0";
+  "mt-2 h-12 w-full rounded-[6px] border border-[#86935b]/22 bg-white/82 px-4 text-[0.95rem] text-[#172332] outline-none transition-colors placeholder:text-[#637180] focus:border-[#6b7a3d] focus:ring-2 focus:ring-[#6b7a3d]/20";
 
-function SubmitButton({
-  label,
-  locked,
-}: {
-  label: string;
-  locked: boolean;
-}) {
+function SubmitButton({ label, locked }: { label: string; locked: boolean }) {
   const { pending } = useFormStatus();
   const disabled = pending || locked;
-
   return (
     <button
       type="submit"
       disabled={disabled}
       className="inline-flex h-12 w-full items-center justify-center rounded-[6px] bg-[#172433] px-6 text-[0.74rem] font-medium tracking-[0.14em] text-white transition-colors hover:bg-[#101b28] disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {pending ? "checking..." : label}
+      {pending ? "checking…" : label}
     </button>
   );
 }
@@ -69,13 +58,12 @@ function StatusMessage({ state }: { state: AuthState }) {
   if (!state.message) {
     return <div className="min-h-[52px]" aria-hidden="true" />;
   }
-
   return (
     <p
       aria-live="polite"
       className={`rounded-[6px] border px-4 py-3 text-sm leading-5 ${
         state.status === "success"
-          ? "border-[#87945a]/18 bg-[#edf2df] text-[#364229]"
+          ? "border-[#87945a]/24 bg-[#edf2df] text-[#364229]"
           : "border-[#a67b5b]/22 bg-[#fff8f5] text-[#6c4734]"
       }`}
     >
@@ -91,7 +79,7 @@ export function AuthScreen({
 }: {
   mode: AuthMode;
   locked?: boolean;
-  onAuthenticated: (redirectTo: string) => void | Promise<void>;
+  onAuthenticated: (redirectTo?: string) => void | Promise<void>;
 }) {
   const copy = authCopy[mode];
   const action = mode === "login" ? signInAction : signUpAction;
@@ -103,18 +91,16 @@ export function AuthScreen({
       handledRedirectRef.current = null;
       return;
     }
-
-    if (handledRedirectRef.current === state.redirectTo) {
-      return;
-    }
-
+    if (handledRedirectRef.current === state.redirectTo) return;
     handledRedirectRef.current = state.redirectTo;
     void onAuthenticated(state.redirectTo);
   }, [onAuthenticated, state.redirectTo]);
 
+  const isSignup = mode === "signup";
+
   return (
-    <div className="flex h-full min-h-[520px] flex-col p-6 sm:min-h-[560px] sm:p-7">
-      <div className="grid grid-cols-2 rounded-[6px] border border-[#87945a]/16 bg-white/44 p-1">
+    <div className="flex h-full flex-col p-6 sm:p-7">
+      <div className="grid grid-cols-2 rounded-[6px] border border-[#87945a]/20 bg-white/48 p-1">
         <Link
           href="/auth/login"
           className={`flex h-10 items-center justify-center rounded-[4px] text-[0.72rem] font-medium tracking-[0.12em] transition-colors ${
@@ -157,25 +143,29 @@ export function AuthScreen({
         />
 
         <div className="mt-8 space-y-4">
-          {mode === "signup" ? (
-            <label className="block">
-              <span className="text-[0.72rem] font-medium tracking-[0.12em] text-[#586673]">
-                name
-              </span>
-              <input
-                name="name"
-                type="text"
-                minLength={2}
-                maxLength={80}
-                required
-                autoComplete="name"
-                placeholder="your name"
-                className={fieldClass}
-              />
-            </label>
-          ) : (
-            <div className="h-[76px]" aria-hidden="true" />
-          )}
+          <label
+            className="block"
+            aria-hidden={!isSignup}
+            style={{
+              visibility: isSignup ? "visible" : "hidden",
+              pointerEvents: isSignup ? "auto" : "none",
+            }}
+          >
+            <span className="text-[0.72rem] font-medium tracking-[0.12em] text-[#586673]">
+              name
+            </span>
+            <input
+              name="name"
+              type="text"
+              minLength={isSignup ? 2 : undefined}
+              maxLength={80}
+              required={isSignup}
+              autoComplete="name"
+              placeholder="your name"
+              className={fieldClass}
+              tabIndex={isSignup ? 0 : -1}
+            />
+          </label>
 
           <label className="block">
             <span className="text-[0.72rem] font-medium tracking-[0.12em] text-[#586673]">
@@ -202,9 +192,7 @@ export function AuthScreen({
               required
               minLength={12}
               maxLength={128}
-              autoComplete={
-                mode === "signup" ? "new-password" : "current-password"
-              }
+              autoComplete={isSignup ? "new-password" : "current-password"}
               placeholder="12+ characters"
               className={fieldClass}
             />

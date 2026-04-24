@@ -42,10 +42,8 @@ class MiniGl {
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.meshes = [];
-
     const gl = canvas.getContext("webgl", { antialias: true });
     if (!gl) throw new Error("WebGL not supported");
-
     this.gl = gl;
     const ctx = gl;
     const self = this;
@@ -73,7 +71,6 @@ class MiniGl {
       update(loc: WebGLUniformLocation | null) {
         if (this.value === undefined || loc === null) return;
         const isMat = this.typeFn.indexOf("Matrix") === 0;
-
         if (isMat) {
           (ctx as any)[`uniform${this.typeFn}`](
             loc,
@@ -88,14 +85,12 @@ class MiniGl {
       getDeclaration(name: string, type: string, length?: number): string {
         const u = this as any;
         if (u.excludeFrom === type) return "";
-
         if (u.type === "array") {
           return (
             u.value[0].getDeclaration(name, type, u.value.length) +
             `\nconst int ${name}_length = ${u.value.length};`
           );
         }
-
         if (u.type === "struct") {
           let nn = name.replace("u_", "");
           nn = nn[0].toUpperCase() + nn.slice(1);
@@ -104,10 +99,8 @@ class MiniGl {
               uu.getDeclaration(n, type).replace(/^uniform/, ""),
             )
             .join("");
-
           return `uniform struct ${nn}\n{\n${fields}\n} ${name}${length ? `[${length}]` : ""};`;
         }
-
         return `uniform ${u.type} ${name}${length ? `[${length}]` : ""};`;
       }
     };
@@ -123,7 +116,6 @@ class MiniGl {
 
       constructor(vertexShaders: string, fragments: string, uniforms: any = {}) {
         this.uniforms = uniforms;
-
         let prefix = "";
         Object.entries(self.commonUniforms).forEach(([n, u]: [string, any]) => {
           prefix += u.getDeclaration(n, "vertex") + "\n";
@@ -131,7 +123,6 @@ class MiniGl {
         Object.entries(uniforms).forEach(([n, u]: [string, any]) => {
           prefix += u.getDeclaration(n, "vertex") + "\n";
         });
-
         this.vertexSource = `
 precision highp float;
 attribute vec4 position;
@@ -139,7 +130,6 @@ attribute vec2 uv;
 attribute vec2 uvNorm;
 ${prefix}
 ${vertexShaders}`;
-
         let fprefix = "";
         Object.entries(self.commonUniforms).forEach(([n, u]: [string, any]) => {
           fprefix += u.getDeclaration(n, "fragment") + "\n";
@@ -147,12 +137,10 @@ ${vertexShaders}`;
         Object.entries(uniforms).forEach(([n, u]: [string, any]) => {
           fprefix += u.getDeclaration(n, "fragment") + "\n";
         });
-
         this.fragmentSource = `
 precision highp float;
 ${fprefix}
 ${fragments}`;
-
         this.vertexShader = self.getShaderByType(
           ctx.VERTEX_SHADER,
           this.vertexSource,
@@ -161,16 +149,13 @@ ${fragments}`;
           ctx.FRAGMENT_SHADER,
           this.fragmentSource,
         );
-
         const prog = ctx.createProgram()!;
         ctx.attachShader(prog, this.vertexShader);
         ctx.attachShader(prog, this.fragmentShader);
         ctx.linkProgram(prog);
-
         if (!ctx.getProgramParameter(prog, ctx.LINK_STATUS)) {
           console.error(ctx.getProgramInfoLog(prog));
         }
-
         ctx.useProgram(prog);
         this.program = prog;
         this.attachUniforms(undefined, self.commonUniforms);
@@ -179,12 +164,9 @@ ${fragments}`;
 
       attachUniforms(name: string | undefined, uniforms: any) {
         if (!name) {
-          Object.entries(uniforms).forEach(([n, u]) =>
-            this.attachUniforms(n, u),
-          );
+          Object.entries(uniforms).forEach(([n, u]) => this.attachUniforms(n, u));
           return;
         }
-
         if ((uniforms as any).type === "array") {
           (uniforms as any).value.forEach((v: any, i: number) =>
             this.attachUniforms(`${name}[${i}]`, v),
@@ -231,36 +213,19 @@ ${fragments}`;
       attach(name: string, program: WebGLProgram) {
         const loc = ctx.getAttribLocation(program, name);
         if (loc < 0) return loc;
-
         if (this.target === ctx.ARRAY_BUFFER) {
           ctx.enableVertexAttribArray(loc);
-          ctx.vertexAttribPointer(
-            loc,
-            this.size,
-            this.type,
-            this.normalized,
-            0,
-            0,
-          );
+          ctx.vertexAttribPointer(loc, this.size, this.type, this.normalized, 0, 0);
         }
-
         return loc;
       }
 
       use(loc: number) {
         if (loc < 0) return;
-
         ctx.bindBuffer(this.target, this.buffer);
         if (this.target === ctx.ARRAY_BUFFER) {
           ctx.enableVertexAttribArray(loc);
-          ctx.vertexAttribPointer(
-            loc,
-            this.size,
-            this.type,
-            this.normalized,
-            0,
-            0,
-          );
+          ctx.vertexAttribPointer(loc, this.size, this.type, this.normalized, 0, 0);
         }
       }
     };
@@ -297,7 +262,6 @@ ${fragments}`;
         this.attributes.uv.values = new Float32Array(2 * this.vertexCount);
         this.attributes.uvNorm.values = new Float32Array(2 * this.vertexCount);
         this.attributes.index.values = new Uint16Array(3 * this.quadCount);
-
         for (let y0 = 0; y0 <= this.ySegCount; y0++) {
           for (let x0 = 0; x0 <= this.xSegCount; x0++) {
             const i = y0 * (this.xSegCount + 1) + x0;
@@ -307,22 +271,18 @@ ${fragments}`;
               (x0 / this.xSegCount) * 2 - 1;
             this.attributes.uvNorm.values[2 * i + 1] =
               1 - (y0 / this.ySegCount) * 2;
-
             if (x0 < this.xSegCount && y0 < this.ySegCount) {
               const s = y0 * this.xSegCount + x0;
               this.attributes.index.values[6 * s] = i;
-              this.attributes.index.values[6 * s + 1] =
-                i + 1 + this.xSegCount;
+              this.attributes.index.values[6 * s + 1] = i + 1 + this.xSegCount;
               this.attributes.index.values[6 * s + 2] = i + 1;
               this.attributes.index.values[6 * s + 3] = i + 1;
-              this.attributes.index.values[6 * s + 4] =
-                i + 1 + this.xSegCount;
+              this.attributes.index.values[6 * s + 4] = i + 1 + this.xSegCount;
               this.attributes.index.values[6 * s + 5] =
                 i + 2 + this.xSegCount;
             }
           }
         }
-
         this.attributes.uv.update();
         this.attributes.uvNorm.update();
         this.attributes.index.update();
@@ -336,7 +296,6 @@ ${fragments}`;
           this.attributes.position.values.length === 3 * this.vertexCount
             ? this.attributes.position.values
             : new Float32Array(3 * this.vertexCount);
-
         for (let y0 = 0; y0 <= this.ySegCount; y0++) {
           for (let x0 = 0; x0 <= this.xSegCount; x0++) {
             const i = y0 * (this.xSegCount + 1) + x0;
@@ -346,7 +305,6 @@ ${fragments}`;
               -(y0 * h) / this.ySegCount + h / 2;
           }
         }
-
         this.attributes.position.update();
       }
     };
@@ -371,8 +329,8 @@ ${fragments}`;
 
       draw() {
         ctx.useProgram(this.material.program);
-        this.material.uniformInstances.forEach(
-          ({ uniform, location }: any) => uniform.update(location),
+        this.material.uniformInstances.forEach(({ uniform, location }: any) =>
+          uniform.update(location),
         );
         this.attributeInstances.forEach(({ attribute, location }: any) =>
           attribute.use(location),
@@ -399,11 +357,9 @@ ${fragments}`;
     const s = this.gl.createShader(type)!;
     this.gl.shaderSource(s, src);
     this.gl.compileShader(s);
-
     if (!this.gl.getShaderParameter(s, this.gl.COMPILE_STATUS)) {
       console.error(this.gl.getShaderInfoLog(s));
     }
-
     return s;
   }
 
@@ -500,7 +456,6 @@ class Gradient {
       }),
       u_waveLayers: new U({ value: [], excludeFrom: "fragment", type: "array" }),
     };
-
     for (let i = 1; i < sc.length; i++) {
       uniforms.u_waveLayers.value.push(
         new U({
@@ -598,7 +553,6 @@ void main(){
   }
   gl_Position=projectionMatrix*modelViewMatrix*vec4(pos,1.);
 }`;
-
     const frag = `varying vec3 v_color;
 void main(){
   vec3 color=v_color;
@@ -615,12 +569,15 @@ void main(){
     this.resize();
   }
 
+  /**
+   * Resize based on the canvas's own bounding rect — NOT a shrinking parent.
+   * The parent uses overflow:hidden + width animation to reveal/clip.
+   * We use the window or a fixed root reference to decide the shader resolution.
+   */
   resize = () => {
-    const parent = this.canvas.parentElement;
-    if (!parent) return;
-
-    const w = parent.clientWidth;
-    const h = parent.clientHeight;
+    const w = this.canvas.clientWidth;
+    const h = this.canvas.clientHeight;
+    if (w === 0 || h === 0) return;
     this.minigl.setSize(w, h);
     this.minigl.setOrthographicCamera();
     this.mesh.geometry.setTopology(Math.ceil(w * 0.02), Math.ceil(h * 0.05));
@@ -629,7 +586,6 @@ void main(){
 
   animate = (ts: number) => {
     if (!this.isPlaying) return;
-
     this.time += Math.min(ts - this.last, 1000 / 15);
     this.last = ts;
     this.mesh.material.uniforms.u_time.value = this.time;
@@ -654,32 +610,23 @@ export function GradientCanvas({
   amplitude = 100,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gradientRef = useRef<Gradient | null>(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
-
     const g = new Gradient(canvasRef.current, PALETTES[palette]);
     g.mesh.material.uniforms.u_global.value.noiseSpeed.value = speed;
     g.mesh.material.uniforms.u_vertDeform.value.noiseAmp.value = amplitude;
     g.start();
+    gradientRef.current = g;
 
     const onResize = () => g.resize();
-    const parent = canvasRef.current.parentElement;
-    const resizeObserver =
-      parent && typeof ResizeObserver !== "undefined"
-        ? new ResizeObserver(() => g.resize())
-        : null;
-
-    if (parent && resizeObserver) {
-      resizeObserver.observe(parent);
-    }
-
     window.addEventListener("resize", onResize);
 
     return () => {
       window.removeEventListener("resize", onResize);
-      resizeObserver?.disconnect();
       g.stop();
+      gradientRef.current = null;
     };
   }, [palette, speed, amplitude]);
 

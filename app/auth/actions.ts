@@ -1,22 +1,9 @@
 "use server";
 
+import { initialState, type AuthState } from "@/app/auth/state";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export type AuthState = {
-  status: "idle" | "error" | "success";
-  message: string;
-  redirectTo: string | null;
-};
-
-const initialState: AuthState = {
-  status: "idle",
-  message: "",
-  redirectTo: null,
-};
-
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-export { initialState };
 
 function getValue(formData: FormData, key: string) {
   const value = formData.get(key);

@@ -102,3 +102,26 @@ body {
 .cta-btn:hover .arrow {
   transform: translateX(4px);
 }
+
+.auth-card {
+  background:
+    radial-gradient(
+      140% 90% at 100% 0%,
+      rgba(122, 130, 72, 0.14) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      120% 80% at 0% 100%,
+      rgba(107, 122, 61, 0.08) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(249, 251, 244, 0.95) 0%,
+      rgba(236, 242, 229, 0.92) 100%
+    );
+  border: 1px solid rgba(138, 151, 96, 0.22);
+  box-shadow:
+    0 8px 24px rgba(45, 60, 31, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
