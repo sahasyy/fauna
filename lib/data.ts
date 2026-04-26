@@ -96,11 +96,11 @@ export const HOME_ROUTES: RouteCard[] = [
     cta: "Open onboarding",
   },
   {
-    href: "/dex",
-    label: "Field Dex",
-    title: "Browse the journal",
+    href: "/field",
+    label: "Field",
+    title: "Browse the field",
     body: "Review captured species, rarity progress, and the shape of the product after your first few sightings.",
-    cta: "View your dex",
+    cta: "View your field",
   },
   {
     href: "/capture",

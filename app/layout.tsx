@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     template: "%s | Fauna",
   },
   description:
-    "Turn wildlife into a real-life game. Photograph animals in the wild, log them to your dex, score by rarity, and compete with friends without counting zoo captures.",
+    "Turn wildlife into a real-life game. Photograph animals in the wild, log them to your field, score by rarity, and compete with friends without counting zoo captures.",
 };
 
 export const viewport = {

@@ -25,7 +25,7 @@ Open <http://localhost:3000>.
 |---|---|
 | `/` | Earth Day landing page with route cards into the rest of the prototype |
 | `/onboarding` | Three-step product walkthrough for capture, geofence, and scoring |
-| `/dex` | Personal wildlife journal with rarity progress, sightings, and fact placeholders |
+| `/field` | Personal wildlife journal with rarity progress, sightings, and fact placeholders |
 | `/capture` | Mocked camera flow for idle → scanning → accepted / enclosure detected |
 | `/leaderboard` | Private friends board focused on readability instead of noisy gamification |
 | `/species/[id]` | Detail page for a captured species |

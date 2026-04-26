@@ -31,7 +31,7 @@ export default function NotFound() {
               The trail ends here.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--color-text-soft)] md:text-lg">
-              Head back to the landing page or jump into the field dex and capture
+              Head back to the landing page or jump into the field and capture
               flow. Those are the strongest parts of the first iteration.
             </p>
 
@@ -39,8 +39,8 @@ export default function NotFound() {
               <Link href="/" className="button-primary">
                 Return home
               </Link>
-              <Link href="/dex" className="button-secondary">
-                Open the dex
+              <Link href="/field" className="button-secondary">
+                Open the field
               </Link>
             </div>
           </motion.div>

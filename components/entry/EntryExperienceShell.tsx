@@ -8,7 +8,7 @@ import { AuthScreen, type AuthMode } from "@/components/auth/AuthScreen";
 import { GradientCanvas } from "@/components/GradientCanvas";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const DEFAULT_REDIRECT = "/dex";
+const DEFAULT_REDIRECT = "/field";
 
 type EntryScene = "landing" | "login" | "signup";
 

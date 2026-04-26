@@ -225,8 +225,8 @@ export default function OnboardingPage() {
                 ) : null}
 
                 {isLast ? (
-                  <Link href="/dex" className="button-primary">
-                    Enter the dex
+                  <Link href="/field" className="button-primary">
+                    Enter the field
                     <ArrowRight size={14} strokeWidth={1.75} />
                   </Link>
                 ) : (
@@ -249,10 +249,10 @@ export default function OnboardingPage() {
           className="flex justify-end pt-8"
         >
           <Link
-            href="/dex"
+            href="/field"
             className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-text-faint)] hover:text-[color:var(--color-text)]"
           >
-            Skip to the dex
+            Skip to the field
           </Link>
         </motion.div>
       </div>

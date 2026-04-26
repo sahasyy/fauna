@@ -24,11 +24,11 @@ export default function SpeciesPage({ params }: { params: Promise<{ id: string }
       <div className="page-shell pt-10">
         <motion.div {...reveal(0.04, 18, 8, 0.65)}>
           <Link
-            href="/dex"
+            href="/field"
             className="inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-text-faint)] hover:text-[color:var(--color-text)]"
           >
             <ArrowLeft size={14} strokeWidth={1.75} />
-            Back to dex
+            Back to field
           </Link>
         </motion.div>
 

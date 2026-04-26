@@ -72,7 +72,7 @@ export async function signInAction(
   return {
     status: "success",
     message: "",
-    redirectTo: "/dex",
+    redirectTo: "/field",
   };
 }
 
@@ -111,7 +111,7 @@ export async function signUpAction(
         data: {
           full_name: name,
         },
-        emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/dex`,
+        emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/field`,
       },
     });
 
@@ -127,7 +127,7 @@ export async function signUpAction(
       return {
         status: "success",
         message: "",
-        redirectTo: "/dex",
+        redirectTo: "/field",
       };
     }
   } catch {
