@@ -45,8 +45,7 @@ Open <http://localhost:3000>.
 
 ## Note on the font
 
-Louize Display is loaded from `public/fonts/LouizeDisplay.ttf`. Per the license bundled with the font, if you ship this publicly, add the required attribution link in your footer:
-
+Louize Display is loaded from `public/fonts/LouizeDisplay.ttf`. Per the license bundled with the font.
 ```html
 <a href="http://www.onlinewebfonts.com">Web Fonts</a>
 ```
